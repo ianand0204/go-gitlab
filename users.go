@@ -30,10 +30,10 @@ func (u User) String() string {
 	return Stringify(u)
 }
 
-func (s *UsersService) Users(opt *UserListOptions) ([]User, *Reponse, error) {
+func (s *UsersService) Users(opt *UserListOptions ) ([]User, *Response, error) {
 	u, err := addOptions("users", opt)
 	if err != nil {
-		return nil, nil.err
+		return nil, nil, err
 	}
 
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -48,4 +48,8 @@ func (s *UsersService) Users(opt *UserListOptions) ([]User, *Reponse, error) {
 	}
 
 	return *users, resp, err
+}
+
+type UserListOptions struct {
+  Since int `url:"since,omitempty"`
 }

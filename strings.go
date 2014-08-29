@@ -13,7 +13,7 @@ import (
 	"reflect"
 )
 
-var timestampType = reflect.TypeOf(Timestamp{})
+//var timestampType = reflect.TypeOf(Timestamp{})
 
 // Stringify attempts to create a reasonable string representation of types in
 // the GitHub library.  It does things like resolve pointers to their values
@@ -56,10 +56,10 @@ func stringifyValue(w io.Writer, val reflect.Value) {
 		}
 
 		// special handling of Timestamp values
-		if v.Type() == timestampType {
-			fmt.Fprintf(w, "{%s}", v.Interface())
-			return
-		}
+//		if v.Type() == timestampType {
+//			fmt.Fprintf(w, "{%s}", v.Interface())
+//			return
+//		}
 
 		w.Write([]byte{'{'})
 
