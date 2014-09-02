@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-  "os"
+//  "os"
 //	"time"
 
 
@@ -26,6 +26,7 @@ const (
 type Client struct {
 	client       *http.Client
 	URL      *url.URL
+//  Url          string
   ApiPath      string
 	Users        *UsersService
 	Repositories *RepositoriesService
@@ -59,19 +60,32 @@ func addOptions(s string, opt interface{}) (string, error) {
 	return u.String(), nil
 }
 
-func NewClient(httpClient *http.Client, fullPath, token  string) *Client {
-	if httpClient == nil {
-		//httpClient = http.DefaultClient
-    fmt.Printf("%s", "provide the Client which has a Token")
-    os.Exit(1)
-	}
-  Url, _ := url.Parse(fullPath)
+func NewClient(baseUrl, apiPath, token string) *Client {
 
-  c := &Client{client: httpClient, URL: Url, Token: token}
-	c.Repositories = &RepositoriesService{client: c}
-	c.Users = &UsersService{client: c}
-	return c
+  Url, _ := url.Parse(baseUrl)
+
+  fmt.Printf("%s", Url)
+
+
+  c := &Client{URL: Url, ApiPath: apiPath, Token: token}
+  c.Repositories = &RepositoriesService{client: c}
+  c.Users = &UsersService{client: c}
+  return c
 }
+
+//func NewClient(httpClient *http.Client, fullPath, token  string) *Client {
+	//if httpClient == nil {
+		////httpClient = http.DefaultClient
+    //fmt.Printf("%s", "provide the Client which has a Token")
+    //os.Exit(1)
+	//}
+  //Url, _ := url.Parse(fullPath)
+
+  //c := &Client{client: httpClient, URL: Url, Token: token}
+	//c.Repositories = &RepositoriesService{client: c}
+	//c.Users = &UsersService{client: c}
+	//return c
+//}
 
 // NewRequest creates an API request. A relative URL can be provided in urlStr,
 // in which case it is resolved relative to the BaseURL of the Client.
