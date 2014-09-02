@@ -1,6 +1,6 @@
 package gogitlab
 
-// import "fmt"
+ import "fmt"
 
 type UsersService struct {
 	client *Client
@@ -30,13 +30,14 @@ func (u User) String() string {
 	return Stringify(u)
 }
 
-func (s *UsersService) Users(opt *UserListOptions ) ([]User, *Response, error) {
+func (s *UsersService) ListAll(opt *UserListOptions) ([]User, *Response, error) {
 	u, err := addOptions("users", opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	req, err := s.client.NewRequest("GET", u, nil)
+  fmt.Printf("%+v", req)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -44,12 +45,15 @@ func (s *UsersService) Users(opt *UserListOptions ) ([]User, *Response, error) {
 	users := new([]User)
 	resp, err := s.client.Do(req, users)
 	if err != nil {
-		return nil, nil, err
+		return nil, resp, err
 	}
 
 	return *users, resp, err
 }
 
 type UserListOptions struct {
-  Since int `url:"since,omitempty"`
+  /// If there are ever specific
+  // options for listing users
+  // build that Struct here
+  ListOptions
 }

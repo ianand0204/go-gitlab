@@ -56,10 +56,10 @@ func stringifyValue(w io.Writer, val reflect.Value) {
 		}
 
 		// special handling of Timestamp values
-//		if v.Type() == timestampType {
-//			fmt.Fprintf(w, "{%s}", v.Interface())
-//			return
-//		}
+		//		if v.Type() == timestampType {
+		//			fmt.Fprintf(w, "{%s}", v.Interface())
+		//			return
+		//		}
 
 		w.Write([]byte{'{'})
 

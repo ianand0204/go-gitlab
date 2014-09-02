@@ -3,7 +3,7 @@ package gogitlab
 import (
 	"bytes"
 	"encoding/json"
-//	"errors"
+	//	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -12,9 +12,8 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-//  "os"
-//	"time"
-
+	//  "os"
+	//	"time"
 
 	"github.com/google/go-querystring/query"
 )
@@ -23,11 +22,11 @@ const (
 	defaultMediaType = "application/octet-stream"
 )
 
+
 type Client struct {
-	client       *http.Client
-	URL      *url.URL
-//  Url          string
-  ApiPath      string
+	client *http.Client
+	BaseURL    *url.URL
+  ApiVersion   string
 	Users        *UsersService
 	Repositories *RepositoriesService
 	Token        string
@@ -60,32 +59,20 @@ func addOptions(s string, opt interface{}) (string, error) {
 	return u.String(), nil
 }
 
-func NewClient(baseUrl, apiPath, token string) *Client {
-
-  Url, _ := url.Parse(baseUrl)
-
-  fmt.Printf("%s", Url)
-
-
-  c := &Client{URL: Url, ApiPath: apiPath, Token: token}
-  c.Repositories = &RepositoriesService{client: c}
-  c.Users = &UsersService{client: c}
-  return c
-}
-
-//func NewClient(httpClient *http.Client, fullPath, token  string) *Client {
-	//if httpClient == nil {
-		////httpClient = http.DefaultClient
-    //fmt.Printf("%s", "provide the Client which has a Token")
-    //os.Exit(1)
-	//}
-  //Url, _ := url.Parse(fullPath)
-
-  //c := &Client{client: httpClient, URL: Url, Token: token}
-	//c.Repositories = &RepositoriesService{client: c}
-	//c.Users = &UsersService{client: c}
-	//return c
+func NewClient(httpClient *http.Client, urlStr, token string) *Client {
+//if httpClient == nil {
+//httpClient = http.DefaultClient
+//fmt.Printf("%s", "provide the Client which has a Token")
+//os.Exit(1)
 //}
+
+fullUrl, _ := url.Parse(urlStr)
+
+c := &Client{client: httpClient, BaseURL: fullUrl, Token: token}
+c.Repositories = &RepositoriesService{client: c}
+c.Users = &UsersService{client: c}
+return c
+}
 
 // NewRequest creates an API request. A relative URL can be provided in urlStr,
 // in which case it is resolved relative to the BaseURL of the Client.
@@ -98,7 +85,10 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		return nil, err
 	}
 
-	u := c.URL.ResolveReference(rel)
+//  fmt.Println(urlStr)
+	u := c.BaseURL.ResolveReference(rel)
+
+//  fmt.Println(u.Path)
 
 	buf := new(bytes.Buffer)
 	if body != nil {
@@ -134,7 +124,6 @@ type Response struct {
 	PrevPage  int
 	FirstPage int
 	LastPage  int
-
 }
 
 // newResponse creats a new Response for the provided http.Response.
@@ -202,7 +191,6 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	defer resp.Body.Close()
 
 	response := newResponse(resp)
-
 
 	err = CheckResponse(resp)
 	if err != nil {
